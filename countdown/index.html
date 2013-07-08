@@ -1,0 +1,122 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"  xmlns:widget="http://www.netvibes.com/ns/">
+  <head>
+    <link rel="stylesheet" type="text/css"
+      href="http://www.netvibes.com/themes/uwa/style.css" />
+    <script type="text/javascript"
+      src="http://www.netvibes.com/js/UWA/load.js.php?env=Standalone"></script>
+
+<meta name="apiVersion" content="1.O" />
+<meta name="author" content="akottr" />
+<meta name="description" content="Countdown" />
+
+<widget:preferences>
+	
+  <preference name="title" type="text" label="title" 
+    defaultValue="___Countdown till happiness___" />
+    
+  <preference name="border" type="text" label="border color" 
+    defaultValue="#CCCCFF"/>
+  <preference name="filling" type="text" label="filling color" 
+    defaultValue="#10C0F4"/>    
+    
+  <preference name="startYear" type="range" label="start year" 
+    defaultValue="0" step="1" min="2007" max="2050" />
+	<preference name="startMonth" type="range" label="start month" 
+	  defaultValue="0" step="1" min="1" max="12" />    
+  <preference name="startDay" type="range" label="start day" 
+    defaultValue="0" step="1" min="1" max="31" />
+  <preference name="startHour" type="range" label="start hour" 
+    defaultValue="0" step="1" min="0" max="23" />
+  <preference name="startMinute" type="range" label="start minute" 
+    defaultValue="0" step="1" min="0" max="59" />
+  <preference name="startSecond" type="range" label="start second" 
+    defaultValue="0" step="1" min="0" max="59" />    
+
+  <preference name="endYear" type="range" label="end year" 
+    defaultValue="0" step="1" min="2007" max="2050" />    
+  <preference name="endMonth" type="range" label="end month" 
+    defaultValue="0" step="1" min="1" max="12" />
+  <preference name="endDay" type="range" label="end day" 
+    defaultValue="0" step="1" min="1" max="31" />
+  <preference name="endHour" type="range" label="end hour" 
+    defaultValue="0" step="1" min="0" max="23" />
+  <preference name="endMinute" type="range" label="end minute" 
+    defaultValue="0" step="1" min="0" max="59" />
+  <preference name="endSecond" type="range" label="end second" 
+    defaultValue="0" step="1" min="0" max="59" />
+    
+</widget:preferences>
+
+<title>Countdown</title>
+<link rel="icon" type="image/gif" 
+      href="http://akottr.de/countdown/img/clock_small.png" />
+<script type="text/javascript">
+
+function countdown(){
+
+	var today=new Date();
+	var todayMillis = today.getTime();
+	
+  if(widget.getValue('startYear')=='0') {
+	  widget.setValue('startYear', today.getFullYear());
+	  widget.setValue('startMonth', (today.getMonth()+1));
+	  widget.setValue('startDay', today.getDate());
+	  widget.setValue('startHour', today.getHours());
+	  widget.setValue('startMinute', today.getMinutes());
+	  widget.setValue('startSecond', today.getSeconds());
+	  
+	  widget.setValue('endYear', today.getFullYear());
+	  widget.setValue('endMonth', (today.getMonth()+1));
+	  widget.setValue('endDay', today.getDate());
+	  widget.setValue('endHour', today.getHours());
+	  widget.setValue('endMinute', (today.getMinutes()+1));
+	  widget.setValue('endSecond', today.getSeconds());	  
+	}
+	
+	
+	
+	var startMillis = new Date(widget.getValue('startYear'),widget.getValue('startMonth')-1,widget.getValue('startDay'),
+	                           widget.getValue('startHour'),widget.getValue('startMinute'),widget.getValue('startSecond')).getTime();
+	var endMillis = new Date(widget.getValue('endYear'),widget.getValue('endMonth')-1,widget.getValue('endDay'),
+	                         widget.getValue('endHour'),widget.getValue('endMinute'),widget.getValue('endSecond')).getTime();
+	
+	var remainingMillis = endMillis-todayMillis;
+	
+	var ratio = 1-(remainingMillis/(endMillis-startMillis));
+	
+	var tmpRemaining = Math.floor(remainingMillis/1000);
+	var remainingSeconds = tmpRemaining % 60; 
+	tmpRemaining = (tmpRemaining - remainingSeconds) / 60;
+	var remainingMinutes  = tmpRemaining % 60; 
+	tmpRemaining = (tmpRemaining - remainingMinutes) / 60;
+	var remainingHours = tmpRemaining  % 24;
+	tmpRemaining = (tmpRemaining - remainingHours) / 24;
+	var remainingDays = tmpRemaining;
+	
+	if (remainingMillis > 0)
+	{
+	  var timeHtml = '<div>'+ remainingDays+ ' days, '+remainingHours+' hours, '+remainingMinutes+' minutes, and '+remainingSeconds+' seconds' + '</div>';
+	  var spacerHtml = '<br>';
+	  var barHtml = '<div style="border:thin solid ' + widget.getValue('border') + '; width:100%"><div style="width:'+Math.floor(ratio*100)+'%; background-color:' + widget.getValue('filling') + '">&nbsp;</div></div>';
+	  widget.setBody(timeHtml+spacerHtml+barHtml);
+	  setTimeout(countdown,1000);
+	}
+	else
+	{
+	  widget.setBody('<div>Event is in the past...</div>');
+	}
+}
+widget.onLoad = function() {
+	widget.setTitle(widget.getValue('title'));
+	countdown();
+}
+
+</script>
+</head>
+  <body>
+    <div>Loading...</div>
+  </body>
+</html>
